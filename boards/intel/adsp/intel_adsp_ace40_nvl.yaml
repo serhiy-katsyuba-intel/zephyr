@@ -1,0 +1,10 @@
+identifier: intel_adsp/ace40_nvl
+name: ACE 4.0 Nova Lake Audio DSP
+type: mcu
+arch: xtensa
+toolchain:
+  - xt-clang
+testing:
+  ignore_tags:
+    - net
+    - bluetooth

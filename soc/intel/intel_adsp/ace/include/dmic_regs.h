@@ -353,6 +353,8 @@
 #include <ace15_mtpm/dmic_regs_ace1x.h>
 #elif CONFIG_SOC_INTEL_ACE30_PTL
 #include <ace30_ptl/dmic_regs_ace3x.h>
+#elif CONFIG_SOC_INTEL_ACE40_NVL
+#include <ace40_nvl/dmic_regs_ace3x.h>		///!!! CHANGE TO 4x.h
 #else
 #error "Unknown SoC"
 #endif

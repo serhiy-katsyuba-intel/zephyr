@@ -239,7 +239,7 @@ struct dai_intel_ipc4_ssp_config {
 	uint32_t sspsp2;
 	uint32_t ssc3;
 	uint32_t ssioc;
-#ifdef CONFIG_SOC_INTEL_ACE30_PTL
+#if defined(CONFIG_SOC_INTEL_ACE30_PTL) || defined(CONFIG_SOC_INTEL_ACE40_NVL)
 	uint64_t ssmidytsa[I2SIPCMC];
 	uint64_t ssmodytsa[I2SOPCMC];
 #endif

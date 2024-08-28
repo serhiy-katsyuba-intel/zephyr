@@ -47,4 +47,12 @@ elseif(CONFIG_BOARD_INTEL_ADSP_ACE30_PTL)
 
   board_finalize_runner_args(intel_adsp)
 
+elseif(CONFIG_BOARD_INTEL_ADSP_ACE40_NVL)
+
+  board_set_rimage_target(nvl)
+
+  set(RIMAGE_SIGN_KEY "otc_private_key.pem" CACHE STRING "default rimage key")
+
+  board_finalize_runner_args(intel_adsp)
+
 endif()
