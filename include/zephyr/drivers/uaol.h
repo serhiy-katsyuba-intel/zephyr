@@ -45,6 +45,8 @@ struct uaol_config {
 	uint16_t fifo_start_offset;      /**< UAOL FIFO start address offset */
 	uint16_t channel_map;            /**< HDA link stream and channels mapping for UAOL FIFO */
 	enum uaol_direction direction;   /**< USB stream/endpoint direction */
+	uint32_t feedback_stream;        /**< UAOL feedback stream index */
+	uint32_t feedback_service_interval; /**< UAOL feedback service interval in HW bits */
 };
 
 /** @brief UAOL stream endpoint table entry. */
