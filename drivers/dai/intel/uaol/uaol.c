@@ -113,6 +113,8 @@ static int dai_uaol_process_aux_config_data(struct dai_intel_uaol_data *dp,
 				dp->link, dp->stream, config->link_idx, config->stream_idx);
 			return -EINVAL;
 		}
+		dp->hw_cfg.feedback_stream = config->feedback_idx;
+		dp->hw_cfg.feedback_service_interval = config->feedback_period;
 	}
 	if (bdf) {
 		dp->hw_cfg.xhci_bus = bdf->bus;
