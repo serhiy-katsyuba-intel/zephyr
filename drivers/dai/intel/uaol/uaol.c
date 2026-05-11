@@ -64,6 +64,9 @@ static void dai_uaol_set_ep_info(struct dai_intel_uaol_data *dp,
 	} else {
 		dp->hw_cfg.sio_credit_size = packet_size;
 	}
+
+	dp->hw_cfg.device_speed = ep_info->device_speed ?
+		UAOL_DEVICE_SPEED_HIGH : UAOL_DEVICE_SPEED_FULL;
 }
 
 static int dai_uaol_process_aux_config_data(struct dai_intel_uaol_data *dp,

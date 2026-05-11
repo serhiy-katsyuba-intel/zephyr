@@ -64,6 +64,7 @@ struct uaol_intel_adsp_data {
 	uint16_t art_divider_n;
 	struct stream_id_pair *stream_map;
 	size_t stream_map_length;
+	enum uaol_device_speed device_speed;
 };
 
 /* Helper macros for accessing registers */
@@ -715,6 +716,8 @@ static int uaol_intel_adsp_config(const struct device *dev, int stream, struct u
 		dp->is_initialized = true;
 	}
 
+	dp->device_speed = cfg->device_speed;
+
 	/* Program the FIFO Start Address Offset and Channel Mapping */
 	sys_write16(cfg->fifo_start_offset, UAOLxPCMSyFSA_ADDR(dp, stream));
 	sys_write16(cfg->channel_map, UAOLxPCMSyCM_ADDR(dp, stream));
@@ -906,6 +909,28 @@ static int uaol_intel_adsp_adjust_rate(const struct device *dev, int stream, boo
 	return 0;
 }
 
+/*
+ * Convert raw feedback endpoint value to a frequency in Hz.
+ */
+static int uaol_intel_adsp_interpret_feedback_value(const struct device *dev, int stream,
+						     uint32_t feedback_value)
+{
+	struct uaol_intel_adsp_data *dp = dev->data;
+
+	switch (dp->device_speed) {
+	case UAOL_DEVICE_SPEED_FULL:
+		/* Full-speed: 24-bit value left-justified in a 32-bit
+		 * container, encoded as 10.14 fixed-point kHz.
+		 */
+		return ((uint64_t)(feedback_value >> 8) * 1000) >> 14;
+	case UAOL_DEVICE_SPEED_HIGH:
+		/* High-speed: 16.16 fixed-point kHz. */
+		return ((uint64_t)feedback_value * 1000) >> 16;
+	default:
+		return -EINVAL;
+	}
+}
+
 static DEVICE_API(uaol, uaol_intel_adsp_api_funcs) = {
 	.config = uaol_intel_adsp_config,
 	.start = uaol_intel_adsp_start,
@@ -913,6 +938,7 @@ static DEVICE_API(uaol, uaol_intel_adsp_api_funcs) = {
 	.program_ep_table = uaol_intel_adsp_program_ep_table,
 	.get_capabilities = uaol_intel_adsp_get_capabilities,
 	.adjust_rate = uaol_intel_adsp_adjust_rate,
+	.interpret_feedback_value = uaol_intel_adsp_interpret_feedback_value,
 };
 
 /* Can be called anytime, e.g., before the device probe. */
