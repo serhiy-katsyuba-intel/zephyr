@@ -65,12 +65,15 @@ typedef int (*uaol_api_program_ep_table)(const struct device *dev, int stream,
 
 typedef int (*uaol_api_get_capabilities)(const struct device *dev, struct uaol_capabilities *caps);
 
+typedef int (*uaol_api_adjust_rate)(const struct device *dev, int stream, bool increase);
+
 __subsystem struct uaol_driver_api {
 	uaol_api_config config;
 	uaol_api_start start;
 	uaol_api_stop stop;
 	uaol_api_program_ep_table program_ep_table;
 	uaol_api_get_capabilities get_capabilities;
+	uaol_api_adjust_rate adjust_rate;
 };
 /**
  * @endcond
@@ -143,6 +146,14 @@ static inline int uaol_program_ep_table(const struct device *dev, int stream,
 static inline int uaol_get_capabilities(const struct device *dev, struct uaol_capabilities *caps)
 {
 	return DEVICE_API_GET(uaol, dev)->get_capabilities(dev, caps);
+}
+
+/*
+ * Perform a one time rate adjustment for UAOL stream.
+ */
+static inline int uaol_adjust_rate(const struct device *dev, int stream, bool increase)
+{
+	return DEVICE_API_GET(uaol, dev)->adjust_rate(dev, stream, increase);
 }
 
 /**
