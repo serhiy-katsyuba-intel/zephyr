@@ -24,6 +24,11 @@ struct uaol_capabilities {
 	uint32_t max_rx_fifo_size;       /**< Max RX FIFO size */
 };
 
+enum uaol_device_speed {
+	UAOL_DEVICE_SPEED_FULL = 0,
+	UAOL_DEVICE_SPEED_HIGH = 1,
+};
+
 /** @brief UAOL stream configuration data. */
 struct uaol_config {
 	uint8_t xhci_bus;                /**< xHCI controller bus */
@@ -40,6 +45,7 @@ struct uaol_config {
 	uint16_t channel_map;            /**< HDA link stream and channels mapping for UAOL FIFO */
 	uint32_t feedback_stream;        /**< UAOL feedback stream index */
 	uint32_t feedback_service_interval; /**< UAOL feedback service interval in HW bits */
+	enum uaol_device_speed device_speed; /**< Full- or High-speed device */
 };
 
 /** @brief UAOL stream endpoint table entry. */
@@ -67,6 +73,9 @@ typedef int (*uaol_api_get_capabilities)(const struct device *dev, struct uaol_c
 
 typedef int (*uaol_api_adjust_rate)(const struct device *dev, int stream, bool increase);
 
+typedef int (*uaol_api_interpret_feedback_value)(const struct device *dev, int stream,
+						 uint32_t feedback_value);
+
 __subsystem struct uaol_driver_api {
 	uaol_api_config config;
 	uaol_api_start start;
@@ -74,6 +83,7 @@ __subsystem struct uaol_driver_api {
 	uaol_api_program_ep_table program_ep_table;
 	uaol_api_get_capabilities get_capabilities;
 	uaol_api_adjust_rate adjust_rate;
+	uaol_api_interpret_feedback_value interpret_feedback_value;
 };
 /**
  * @endcond
@@ -154,6 +164,15 @@ static inline int uaol_get_capabilities(const struct device *dev, struct uaol_ca
 static inline int uaol_adjust_rate(const struct device *dev, int stream, bool increase)
 {
 	return DEVICE_API_GET(uaol, dev)->adjust_rate(dev, stream, increase);
+}
+
+/*
+ * Convert raw feedback endpoint value to a frequency in Hz.
+ */
+static inline int uaol_interpret_feedback_value(const struct device *dev, int stream,
+						 uint32_t feedback_value)
+{
+	return DEVICE_API_GET(uaol, dev)->interpret_feedback_value(dev, stream, feedback_value);
 }
 
 /**

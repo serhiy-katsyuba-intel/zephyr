@@ -135,6 +135,8 @@ static int dai_uaol_process_aux_config_data(struct dai_intel_uaol_data *dp,
 		} else {
 			dp->hw_cfg.sio_credit_size = ep_info->usb_mps;
 		}
+		dp->hw_cfg.device_speed = ep_info->device_speed ?
+			UAOL_DEVICE_SPEED_HIGH : UAOL_DEVICE_SPEED_FULL;
 	}
 	if (art_divider) {
 		dp->hw_cfg.art_divider_m = art_divider->multiplier;
@@ -231,6 +233,8 @@ static int dai_uaol_process_dma_control_data(struct dai_intel_uaol_data *dp,
 			} else {
 				dp->hw_cfg.sio_credit_size = ep_info->usb_mps;
 			}
+			dp->hw_cfg.device_speed = ep_info->device_speed ?
+				UAOL_DEVICE_SPEED_HIGH : UAOL_DEVICE_SPEED_FULL;
 			break;
 		default:
 			break;
